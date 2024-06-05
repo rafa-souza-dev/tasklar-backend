@@ -41,6 +41,7 @@ urlpatterns = [
 
     # users
     path('api/users/', CreateUserView.as_view(), name='create_user'),
+    path('api/taskers/', CreateTaskerView.as_view(), name='create_tasker'),
     
     # drf-spectacular
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),

@@ -4,8 +4,8 @@ from rest_framework.response import Response
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import update_session_auth_hash
 
-from authentication.models import User
-from .serializers import ChangePasswordSerializer, UserSerializer
+from authentication.models import User, Tasker
+from authentication.api.serializers import ChangePasswordSerializer, UserSerializer, TaskerSerializer
 from utils.validation.strong_password import is_strong_password
 
 class CreateUserView(generics.CreateAPIView):
@@ -42,6 +42,33 @@ class CreateUserView(generics.CreateAPIView):
             headers=headers,
         )
 
+class CreateTaskerView(generics.CreateAPIView):
+    serializer_class = TaskerSerializer
+    permission_classes = [permissions.AllowAny,]
+    queryset = Tasker.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        if not is_strong_password(request.data["user"]["password"]):
+            return Response(
+                {"message": "Invalid password format."},
+                status=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            )
+
+        tasker = serializer.save()
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            {
+                "id": tasker.user.id,
+                "email": tasker.user.email,
+                "tipo_servico": tasker.tipo_servico,
+                "telefone": tasker.telefone,
+            },
+            status=status.HTTP_201_CREATED,
+            headers=headers,
+        )
 
 class ChangePasswordAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated,]
