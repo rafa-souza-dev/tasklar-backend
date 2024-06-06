@@ -7,14 +7,14 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'email', 'password', 'nome', 'data_nascimento', 'endereco')
+        fields = ('id', 'email', 'password', 'name', 'birthdate', 'adress')
 
     def create(self, validated_data):
         user = User.objects.create(
             email=validated_data['email'],
-            nome=validated_data['nome'],
-            data_nascimento=validated_data['data_nascimento'],
-            endereco=validated_data['endereco']
+            nome=validated_data['name'],
+            data_nascimento=validated_data['birthdate'],
+            endereco=validated_data['adress']
         )
         user.set_password(validated_data['password'])
         user.save()
@@ -35,7 +35,7 @@ class TaskerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tasker
-        fields = ('user', 'tipo_servico', 'telefone')
+        fields = ('user', 'typeService', 'phoneNumber')
 
     def create(self, validated_data):
         user_data = validated_data.pop('user')

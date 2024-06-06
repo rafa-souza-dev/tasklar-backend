@@ -19,9 +19,9 @@ class CustomUserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
-    nome = models.CharField(max_length=255)
-    data_nascimento = models.DateField()
-    endereco = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    birthdate = models.DateField()
+    adress = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
@@ -35,8 +35,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class Tasker(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name='tasker_profile')
-    tipo_servico = models.CharField(max_length=255)
-    telefone = models.CharField(max_length=20)
+    typeService = models.CharField(max_length=255)
+    phoneNumber = models.CharField(max_length=20)
 
     def __str__(self):
-        return f'{self.user.nome} - {self.tipo_servico}'
+        return f'{self.user.name} - {self.typeService}'
