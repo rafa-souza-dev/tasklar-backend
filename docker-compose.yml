@@ -1,8 +1,6 @@
-version: '3.8'
-
 services:
   db:
-    image: mysql:5.7
+    image: mysql:latest
     container_name: tasklar-db-1
     restart: always
     environment:
