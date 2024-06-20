@@ -1,3 +1,7 @@
 from django.contrib import admin
 
-# Register your models here.
+from tasker import models
+
+admin.site.register(models.Tasker)
+admin.site.register(models.Period)
+admin.site.register(models.Category)
