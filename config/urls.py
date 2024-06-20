@@ -25,9 +25,16 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView
 )
+from rest_framework.routers import DefaultRouter
+from tasker.api.viewsets import PeriodViewSet, CategoryViewSet
 
 from authentication.api.viewsets import CreateUserView, ChangePasswordAPIView
 from authentication.views import PasswordResetView
+
+router = DefaultRouter()
+
+router.register(r'periods', PeriodViewSet, basename='period')
+router.register(r'categories', CategoryViewSet, basename='category')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -46,4 +53,7 @@ urlpatterns = [
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+
+    # include the router URLs
+    path('api/', include(router.urls)),
 ]

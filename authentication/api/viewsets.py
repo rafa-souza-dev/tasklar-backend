@@ -5,6 +5,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth import update_session_auth_hash
 
 from authentication.models import User
+from tasker.models import Category, Period, Tasker
 from .serializers import ChangePasswordSerializer, UserSerializer
 from utils.validation.strong_password import is_strong_password
 
@@ -30,13 +31,30 @@ class CreateUserView(generics.CreateAPIView):
             password=hashed_password,
         )
 
+        tasker_data = request.data.get('tasker')
+
+        if tasker_data:
+            category_data = tasker_data.pop('category')
+            periods_data = tasker_data.pop('periods')
+
+            category, _ = Category.objects.get_or_create(**category_data)
+            tasker = Tasker.objects.create(user=user, category=category, **tasker_data)
+
+            for period_data in periods_data:
+                period, _ = Period.objects.get_or_create(**period_data)
+                tasker.periods.add(period)
+
+            tasker.save()
+
         user.save()
 
         headers = self.get_success_headers(serializer.data)
+
         return Response(
             {
                 "id": user.id,
                 "email": user.email,
+                "tasker": tasker_data if tasker_data else None
             },
             status=status.HTTP_201_CREATED,
             headers=headers,
