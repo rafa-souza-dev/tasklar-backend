@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from localflavor.br import models as local_flavor_models
 from django.db import models
 
 
@@ -20,7 +21,10 @@ class CustomUserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+    name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
+    uf = local_flavor_models.BRStateField()
+    city = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 

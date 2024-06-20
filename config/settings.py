@@ -43,8 +43,10 @@ INSTALLED_APPS = [
 
     # my apps
     'authentication.apps.AuthenticationConfig',
+    'tasker.apps.TaskerConfig',
 
     # third-party apps
+    'localflavor',
     'rest_framework',
     'rest_framework_simplejwt',
     'django_rest_passwordreset',
