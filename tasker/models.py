@@ -18,7 +18,7 @@ class Category(models.Model):
 
 
 class Tasker(models.Model):
-    user = models.OneToOneField(User, on_delete=models.PROTECT)
+    user = models.OneToOneField(User, on_delete=models.PROTECT, null=True, blank=True, default=None)
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
     periods = models.ManyToManyField(Period)
     phone = models.CharField(max_length=255)
