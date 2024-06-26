@@ -15,6 +15,9 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class TaskerSerializer(serializers.ModelSerializer):
+    category = CategorySerializer()
+    periods = PeriodSerializer()
+
     class Meta:
         model = Tasker
         fields = ('id', 'category', 'periods', 'phone', 'hourly_rate', 'description')
