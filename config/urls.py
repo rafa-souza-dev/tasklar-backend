@@ -26,7 +26,7 @@ from drf_spectacular.views import (
     SpectacularSwaggerView
 )
 from rest_framework.routers import DefaultRouter
-from tasker.api.viewsets import PeriodViewSet, CategoryViewSet
+from tasker.api.viewsets import PeriodViewSet, CategoryViewSet, TaskerListView
 
 from authentication.api.viewsets import CreateUserView, ChangePasswordAPIView
 from authentication.views import PasswordResetView
@@ -48,6 +48,9 @@ urlpatterns = [
 
     # users
     path('api/users/', CreateUserView.as_view(), name='create_user'),
+
+    # taskers
+    path('api/taskers/', TaskerListView.as_view(), name='list_taskers'),
     
     # drf-spectacular
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
