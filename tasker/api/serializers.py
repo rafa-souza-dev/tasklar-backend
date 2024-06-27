@@ -15,9 +15,10 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class TaskerSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source='user.name', read_only=True)
     category = CategorySerializer()
     periods = PeriodSerializer()
 
     class Meta:
         model = Tasker
-        fields = ('id', 'category', 'periods', 'phone', 'hourly_rate', 'description')
+        fields = ('id', 'name', 'category', 'periods', 'phone', 'hourly_rate', 'description')
