@@ -26,7 +26,10 @@ from drf_spectacular.views import (
     SpectacularSwaggerView
 )
 from rest_framework.routers import DefaultRouter
-from tasker.api.viewsets import PeriodViewSet, CategoryViewSet, TaskerListView
+from tasker.api.viewsets import (
+    PeriodViewSet, CategoryViewSet, TaskerListView,
+    TaskerRetrieveView
+)
 
 from authentication.api.viewsets import CreateUserView, ChangePasswordAPIView
 from authentication.views import PasswordResetView
@@ -45,12 +48,13 @@ urlpatterns = [
     path('api/change-password/', ChangePasswordAPIView.as_view(), name='change_password'),
     path('api/reset-password/', include('django_rest_passwordreset.urls', namespace='password_reset')),
     path('reset-password-confirm/', PasswordResetView.as_view(), name='password_reset_confirm_form'),
-
     # users
+
     path('api/users/', CreateUserView.as_view(), name='create_user'),
 
     # taskers
     path('api/taskers/', TaskerListView.as_view(), name='list_taskers'),
+    path('api/taskers/<int:pk>', TaskerRetrieveView.as_view(), name='find_tasker'),
     
     # drf-spectacular
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),

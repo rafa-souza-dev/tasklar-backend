@@ -2,7 +2,7 @@ from rest_framework import viewsets, generics
 
 from .serializers import (
     PeriodSerializer, CategorySerializer, TaskerCreateSerializer,
-    TaskerListSerializer
+    TaskerListSerializer, TaskerRetrieveSerializer
 )
 from ..models import Period, Category, Tasker
 
@@ -23,4 +23,9 @@ class TaskerListView(generics.ListAPIView):
 
 class TaskerCreateView(generics.CreateAPIView):
     serializer_class = TaskerCreateSerializer
+    queryset = Tasker.objects.all()
+
+
+class TaskerRetrieveView(generics.RetrieveAPIView):
+    serializer_class = TaskerRetrieveSerializer
     queryset = Tasker.objects.all()

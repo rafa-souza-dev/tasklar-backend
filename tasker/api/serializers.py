@@ -22,7 +22,7 @@ class TaskerUserSerializer(serializers.ModelSerializer):
         fields = ['name']
 
 
-class TaskerListSerializer(serializers.ModelSerializer):
+class TaskerRetrieveSerializer(serializers.ModelSerializer):
     user = TaskerUserSerializer(read_only=True)
     category = CategorySerializer()
     periods = PeriodSerializer(many=True)
@@ -30,6 +30,15 @@ class TaskerListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tasker
         fields = ('id', 'user', 'category', 'periods', 'phone', 'hourly_rate', 'description')
+
+
+class TaskerListSerializer(serializers.ModelSerializer):
+    user = TaskerUserSerializer(read_only=True)
+    periods = PeriodSerializer(many=True)
+
+    class Meta:
+        model = Tasker
+        fields = ('id', 'user', 'periods', 'phone', 'hourly_rate', 'description')
 
 
 class TaskerCreateSerializer(serializers.ModelSerializer):
