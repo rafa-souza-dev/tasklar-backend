@@ -1,6 +1,8 @@
 from rest_framework import serializers
 
 from ..models import Tasker, Period, Category
+from authentication.models import User
+
 
 class PeriodSerializer(serializers.ModelSerializer):
     class Meta:
@@ -14,11 +16,23 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ('id', 'name')
 
 
-class TaskerSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(source='user.name', read_only=True)
+class TaskerUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['name']
+
+
+class TaskerListSerializer(serializers.ModelSerializer):
+    user = TaskerUserSerializer(read_only=True)
     category = CategorySerializer()
-    periods = PeriodSerializer()
+    periods = PeriodSerializer(many=True)
 
     class Meta:
         model = Tasker
-        fields = ('id', 'name', 'category', 'periods', 'phone', 'hourly_rate', 'description')
+        fields = ('id', 'user', 'category', 'periods', 'phone', 'hourly_rate', 'description')
+
+
+class TaskerCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tasker
+        fields = ('id', 'category', 'periods', 'phone', 'hourly_rate', 'description')

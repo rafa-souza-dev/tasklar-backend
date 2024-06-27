@@ -1,10 +1,10 @@
 from rest_framework import serializers
 
 from authentication import models
-from tasker.api.serializers import TaskerSerializer
+from tasker.api.serializers import TaskerCreateSerializer
 
 class UserSerializer(serializers.ModelSerializer):
-    tasker = TaskerSerializer(required=False)
+    tasker = TaskerCreateSerializer(required=False)
     password = serializers.CharField(write_only=True, max_length=16)
 
     class Meta:

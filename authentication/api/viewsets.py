@@ -12,7 +12,6 @@ from utils.validation.strong_password import is_strong_password
 class CreateUserView(generics.CreateAPIView):
     serializer_class = UserSerializer
     permission_classes = [permissions.AllowAny,]
-    queryset = User.objects.all()
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -28,37 +27,38 @@ class CreateUserView(generics.CreateAPIView):
 
         user = User.objects.create(
             email=request.data["email"],
+            name=request.data["name"],
+            uf=request.data["uf"],
+            city=request.data["city"],
             password=hashed_password,
         )
 
         tasker_data = request.data.get('tasker')
 
         if tasker_data:
-            category_data = tasker_data.pop('category')
-            periods_data = tasker_data.pop('periods')
+            category_id = tasker_data.pop('category')
+            periods_ids = tasker_data.pop('periods')
 
-            category, _ = Category.objects.get_or_create(**category_data)
+            category = Category.objects.get(pk=category_id)
             tasker = Tasker.objects.create(user=user, category=category, **tasker_data)
 
-            for period_data in periods_data:
-                period, _ = Period.objects.get_or_create(**period_data)
+            for period_id in periods_ids:
+                period = Period.objects.get(pk=period_id)
                 tasker.periods.add(period)
 
             tasker.save()
 
         user.save()
 
+        response_data = {
+            "id": user.id,
+            "email": user.email,
+            "tasker": tasker_data if tasker_data else None
+        }
+
         headers = self.get_success_headers(serializer.data)
 
-        return Response(
-            {
-                "id": user.id,
-                "email": user.email,
-                "tasker": tasker_data if tasker_data else None
-            },
-            status=status.HTTP_201_CREATED,
-            headers=headers,
-        )
+        return Response(response_data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class ChangePasswordAPIView(APIView):
