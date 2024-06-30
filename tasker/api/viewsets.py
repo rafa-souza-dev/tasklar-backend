@@ -1,4 +1,5 @@
 from rest_framework import viewsets, generics
+from django_filters.rest_framework import DjangoFilterBackend
 
 from .serializers import (
     PeriodSerializer, CategorySerializer, TaskerCreateSerializer,
@@ -17,8 +18,10 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
 
 class TaskerListView(generics.ListAPIView):
-    serializer_class = TaskerListSerializer
     queryset = Tasker.objects.all()
+    serializer_class = TaskerListSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['category']
 
 
 class TaskerCreateView(generics.CreateAPIView):
