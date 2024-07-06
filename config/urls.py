@@ -54,7 +54,7 @@ urlpatterns = [
 
     # taskers
     path('api/taskers/', TaskerListView.as_view(), name='list_taskers'),
-    path('api/taskers/<int:pk>', TaskerRetrieveView.as_view(), name='find_tasker'),
+    path('api/taskers/<int:pk>/', TaskerRetrieveView.as_view(), name='find_tasker'),
     
     # drf-spectacular
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
