@@ -31,6 +31,11 @@ from tasker.api.viewsets import (
     TaskerRetrieveView
 )
 
+from job.api.viewsets import (
+    JobCreateView,
+    JobViewSet
+)
+
 from authentication.api.viewsets import CreateUserView, ChangePasswordAPIView
 from authentication.views import PasswordResetView
 
@@ -55,6 +60,9 @@ urlpatterns = [
     # taskers
     path('api/taskers/', TaskerListView.as_view(), name='list_taskers'),
     path('api/taskers/<int:pk>', TaskerRetrieveView.as_view(), name='find_tasker'),
+
+    # job
+    path('api/jobs/create/', JobCreateView.as_view(), name='create_job'),
     
     # drf-spectacular
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
