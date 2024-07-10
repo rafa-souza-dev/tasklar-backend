@@ -5,7 +5,8 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth import update_session_auth_hash
 
 from authentication.models import User
-from tasker.models import Category, Period, Tasker
+from consumer.models import Consumer
+from tasker.models import Tasker
 from .serializers import ChangePasswordSerializer, UserSerializer
 from utils.validation.strong_password import is_strong_password
 
@@ -30,30 +31,25 @@ class CreateUserView(generics.CreateAPIView):
             name=request.data["name"],
             uf=request.data["uf"],
             city=request.data["city"],
+            phone=request.data["phone"],
+            profile_type=request.data["profile_type"],
             password=hashed_password,
         )
 
-        tasker_data = request.data.get('tasker')
-
-        if tasker_data:
-            category_id = tasker_data.pop('category')
-            periods_ids = tasker_data.pop('periods')
-
-            category = Category.objects.get(pk=category_id)
-            tasker = Tasker.objects.create(user=user, category=category, **tasker_data)
-
-            for period_id in periods_ids:
-                period = Period.objects.get(pk=period_id)
-                tasker.periods.add(period)
+        if request.data["profile_type"] == 'T':
+            tasker = Tasker.objects.create(user=user)
 
             tasker.save()
+        elif request.data["profile_type"] == 'C':
+            consumer = Consumer.objects.create(user=user)
+
+            consumer.save()
 
         user.save()
 
         response_data = {
             "id": user.id,
             "email": user.email,
-            "tasker": tasker_data if tasker_data else None
         }
 
         headers = self.get_success_headers(serializer.data)

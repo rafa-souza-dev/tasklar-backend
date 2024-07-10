@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from localflavor.br import models as local_flavor_models
 from django.db import models
+from django.core.validators import RegexValidator
 
 
 class CustomUserManager(BaseUserManager):
@@ -21,12 +22,22 @@ class CustomUserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+    class ProfileType(models.TextChoices):
+        TASKER = 'T', 'Tasker'
+        CONSUMER = 'C', 'Consumer'
+
+    phone_validator = RegexValidator(
+        regex=r'^\(\d{2}\) \d{4,5}-\d{4}$',
+    )
+
     name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
     uf = local_flavor_models.BRStateField()
     city = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    phone = models.CharField(max_length=15, validators=[phone_validator])
+    profile_type = models.CharField(max_length=1, choices=ProfileType.choices, default=ProfileType.CONSUMER)
 
     objects = CustomUserManager()
 
