@@ -15,11 +15,19 @@ class TestRegister(APITestCase):
 
         return super().setUp()
 
-    def test_should_be_able_to_register(self):
+    def test_should_be_able_to_register_a_consumer(self):
         url = reverse('create_user')
+        body = {
+            'email': 'juvenal2@test.com',
+            'password': self.password,
+            'name': 'Rafira',
+            'uf': 'PE',
+            'city': 'Pesqueira',
+            'phone': '87988888888'
+        }
 
         response = self.client.post(
-            url, {'email': 'juvenal2@test.com', 'password': self.password}, format='json'
+            url, body, format='json'
         )
 
         self.assertTrue(response.status_code == 201)
@@ -38,12 +46,20 @@ class TestRegister(APITestCase):
 
     def test_should_not_be_able_to_register_with_invalid_password_format(self):
         url = reverse('create_user')
+        body = {
+            'email': 'juvenal2@test.com',
+            'password': '123456789',
+            'name': 'Rafira',
+            'uf': 'PE',
+            'city': 'Pesqueira',
+            'phone': '87988888888'
+        }
 
         response = self.client.post(
-            url, {'email': 'juvenal2@test.com', 'password': '123456789'}, format='json'
+            url, body, format='json'
         )
 
-        self.assertTrue(response.status_code == 422)
+        self.assertEqual(response.status_code, 422)
 
     def test_should_not_be_able_to_register_without_email(self):
         url = reverse('create_user')
