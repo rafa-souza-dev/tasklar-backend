@@ -41,3 +41,7 @@ class CategorySerializer(serializers.ModelSerializer):
 class JobDetailsSerializer(JobSerializer):
     tasker = TaskerDetailsSerializer()
     category = CategorySerializer()
+
+
+class JobListSerializer(JobSerializer):
+    tasker = TaskerDetailsSerializer()

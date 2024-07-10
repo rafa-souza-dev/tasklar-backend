@@ -29,8 +29,9 @@ from rest_framework.routers import DefaultRouter
 
 from job.api.viewsets import (
     CategoryViewSet,
-    JobListCreateAPIView,
-    JobRetrieveAPIView
+    JobRetrieveAPIView,
+    JobCreateAPIView,
+    JobListAPIView
 )
 
 from authentication.api.viewsets import CreateUserView, ChangePasswordAPIView
@@ -54,7 +55,8 @@ urlpatterns = [
     path('api/users/', CreateUserView.as_view(), name='create_user'),
 
     # jobs
-    path('api/jobs/', JobListCreateAPIView.as_view(), name='list_create_job'),
+    path('api/jobs/create/', JobCreateAPIView.as_view(), name='create_job'),
+    path('api/jobs/', JobListAPIView.as_view(), name='list_job'),
     path('api/jobs/<int:pk>/', JobRetrieveAPIView.as_view(), name='retrieve_job'),
     
     # drf-spectacular
