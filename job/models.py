@@ -1,5 +1,10 @@
 from django.db import models
-from tasker.models import Tasker, Category
+from tasker.models import Tasker
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=255)
+
 
 class Job(models.Model):
     tasker = models.ForeignKey(Tasker, on_delete=models.CASCADE)
