@@ -28,8 +28,8 @@ from drf_spectacular.views import (
 from rest_framework.routers import DefaultRouter
 
 from job.api.viewsets import (
-    JobCreateView,
-    JobViewSet
+    CategoryViewSet,
+    JobListCreateAPIView
 )
 
 from authentication.api.viewsets import CreateUserView, ChangePasswordAPIView
@@ -37,7 +37,7 @@ from authentication.views import PasswordResetView
 
 router = DefaultRouter()
 
-# router.register(r'periods', PeriodViewSet, basename='period')
+router.register(r'categories', CategoryViewSet, basename='period')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -53,7 +53,7 @@ urlpatterns = [
     path('api/users/', CreateUserView.as_view(), name='create_user'),
 
     # job
-    path('api/jobs/create/', JobCreateView.as_view(), name='create_job'),
+    path('api/jobs/', JobListCreateAPIView.as_view(), name='list_create_job'),
     
     # drf-spectacular
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),

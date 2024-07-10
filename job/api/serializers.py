@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from job.models import Job
-from tasker.models import Tasker
+from job.models import Category, Job
 
 class JobSerializer(serializers.ModelSerializer):
     days_of_week = serializers.ListField(
@@ -30,3 +29,9 @@ class JobSerializer(serializers.ModelSerializer):
             instance.set_days_of_week(days_of_week)
         instance.save()
         return instance
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = '__all__'

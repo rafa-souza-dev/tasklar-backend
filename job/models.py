@@ -5,6 +5,9 @@ from tasker.models import Tasker
 class Category(models.Model):
     name = models.CharField(max_length=255)
 
+    def __str__(self):
+        return self.name
+
 
 class Job(models.Model):
     tasker = models.ForeignKey(Tasker, on_delete=models.CASCADE)

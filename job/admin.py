@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import Job
+from .models import Category, Job
+
+admin.site.register(Category)
 
 @admin.register(Job)
 class JobAdmin(admin.ModelAdmin):
