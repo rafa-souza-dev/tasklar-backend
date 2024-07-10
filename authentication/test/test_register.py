@@ -3,6 +3,8 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentication.models import User
+from consumer.models import Consumer
+from tasker.models import Tasker
 
 
 class TestRegister(APITestCase):
@@ -15,6 +17,29 @@ class TestRegister(APITestCase):
 
         return super().setUp()
 
+    def test_should_be_able_to_register_a_tasker(self):
+        url = reverse('create_user')
+        body = {
+            'email': 'juvenal2@test.com',
+            'password': self.password,
+            'name': 'Rafira',
+            'uf': 'PE',
+            'city': 'Pesqueira',
+            'phone': '(87) 98888-8888',
+            'profile_type': 'T'
+        }
+
+        response = self.client.post(
+            url, body, format='json'
+        )
+
+        tasker = Tasker.objects.filter(user_id=response.data['id']).first()
+
+        self.assertEqual(response.status_code, 201)
+        self.assertTrue(response.data['id'] != None)
+        self.assertTrue(response.data['email'] != None)
+        self.assertTrue(tasker != None)
+
     def test_should_be_able_to_register_a_consumer(self):
         url = reverse('create_user')
         body = {
@@ -23,16 +48,20 @@ class TestRegister(APITestCase):
             'name': 'Rafira',
             'uf': 'PE',
             'city': 'Pesqueira',
-            'phone': '87988888888'
+            'phone': '(87) 98888-8888',
+            'profile_type': 'C'
         }
 
         response = self.client.post(
             url, body, format='json'
         )
 
-        self.assertTrue(response.status_code == 201)
+        consumer = Consumer.objects.filter(user_id=response.data['id']).first()
+
+        self.assertEqual(response.status_code, 201)
         self.assertTrue(response.data['id'] != None)
         self.assertTrue(response.data['email'] != None)
+        self.assertTrue(consumer != None)
 
     def test_should_not_be_able_to_register_when_email_already_in_use(self):
         url = reverse('create_user')
@@ -52,7 +81,8 @@ class TestRegister(APITestCase):
             'name': 'Rafira',
             'uf': 'PE',
             'city': 'Pesqueira',
-            'phone': '87988888888'
+            'phone': '(87) 98888-8888',
+            'profile_type': 'C'
         }
 
         response = self.client.post(
