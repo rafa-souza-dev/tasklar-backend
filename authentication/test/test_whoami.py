@@ -5,7 +5,7 @@ from rest_framework.test import APITestCase
 from authentication.models import User
 
 
-class TestLogin(APITestCase):
+class TestWhoami(APITestCase):
     def setUp(self) -> None:
         self.email = 'juvenal@test.com'
         self.password = 'S6y6@9iP5Q&r5BQx'
