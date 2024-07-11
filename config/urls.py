@@ -34,7 +34,7 @@ from job.api.viewsets import (
     JobListAPIView
 )
 
-from authentication.api.viewsets import CreateUserView, ChangePasswordAPIView
+from authentication.api.viewsets import CreateUserView, ChangePasswordAPIView, WhoamiAPIView
 from authentication.views import PasswordResetView
 
 router = DefaultRouter()
@@ -53,6 +53,7 @@ urlpatterns = [
     
     # users
     path('api/users/', CreateUserView.as_view(), name='create_user'),
+    path('api/whoami/', WhoamiAPIView.as_view(), name='whoami'),
 
     # jobs
     path('api/jobs/create/', JobCreateAPIView.as_view(), name='create_job'),

@@ -10,6 +10,12 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'email', 'uf', 'city', 'password', 'phone', 'profile_type')
 
 
+class WhoamiSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.User
+        fields = ('id', 'name', 'email', 'uf', 'city', 'phone', 'profile_type')
+
+
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)

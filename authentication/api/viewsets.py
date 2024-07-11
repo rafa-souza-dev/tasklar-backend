@@ -7,7 +7,7 @@ from django.contrib.auth import update_session_auth_hash
 from authentication.models import User
 from consumer.models import Consumer
 from tasker.models import Tasker
-from .serializers import ChangePasswordSerializer, UserSerializer
+from .serializers import ChangePasswordSerializer, UserSerializer, WhoamiSerializer
 from utils.validation.strong_password import is_strong_password
 
 class CreateUserView(generics.CreateAPIView):
@@ -82,3 +82,14 @@ class ChangePasswordAPIView(APIView):
             return Response({'error': 'Incorrect old password.'}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class WhoamiAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated,]
+
+    def get(self, request):
+        current_user = request.user
+
+        serializer = WhoamiSerializer(current_user)
+
+        return Response({'user': serializer.data}, status=status.HTTP_200_OK)
