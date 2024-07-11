@@ -3,6 +3,7 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentication.models import User
+from tasker.models import Tasker
 
 
 class TestWhoami(APITestCase):
@@ -11,7 +12,9 @@ class TestWhoami(APITestCase):
         self.password = 'S6y6@9iP5Q&r5BQx'
         self.hashed_password = make_password(self.password)
 
-        User.objects.create(email=self.email, password=self.hashed_password)
+        user = User.objects.create(email=self.email, password=self.hashed_password, profile_type='T')
+
+        Tasker.objects.create(user=user)
 
         url_login = reverse('token_obtain_pair')
         body_login = {
@@ -38,6 +41,7 @@ class TestWhoami(APITestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json_response['user']['email'], self.email)
+        self.assertTrue(json_response['user']['tasker'] != None)
 
     def test_not_should_be_able_to_recieve_whoami_data_when_are_not_logged(self):
         url = reverse('whoami')
