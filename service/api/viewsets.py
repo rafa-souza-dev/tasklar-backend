@@ -53,3 +53,31 @@ class ServiceCreateView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class ServiceActionView(APIView):
+    def post(self, request, format=None):
+        action = request.data.get('action')
+        user_id = request.data.get('user_id')
+        job_id = request.data.get('job_id')
+        tasker_id = request.data.get('tasker_id')
+
+        valid_actions = ['accept', 'reject']
+
+        if action not in valid_actions:
+            return Response({'error': 'Invalid action.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not (user_id and job_id and tasker_id):
+            return Response({'error': 'User ID, Job ID, or Tasker ID not provided.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            service = Service.objects.get(user_id=user_id, job_id=job_id, tasker_id=tasker_id)
+        except Service.DoesNotExist:
+            return Response({'error': 'Service not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        if action == 'accept':
+            service.status = 'accepted'
+        elif action == 'reject':
+            service.status = 'rejected'
+        
+        service.save()
+        return Response({'status': f'Service has been {service.status}.'}, status=status.HTTP_200_OK)

@@ -37,6 +37,7 @@ from job.api.viewsets import (
 from authentication.api.viewsets import CreateUserView, ChangePasswordAPIView
 from authentication.views import PasswordResetView
 from service.api.viewsets import ServiceCreateView
+from tasker.api.viewsets import TaskerServiceActionView
 
 router = DefaultRouter()
 
@@ -51,6 +52,9 @@ urlpatterns = [
     path('api/change-password/', ChangePasswordAPIView.as_view(), name='change_password'),
     path('api/reset-password/', include('django_rest_passwordreset.urls', namespace='password_reset')),
     path('reset-password-confirm/', PasswordResetView.as_view(), name='password_reset_confirm_form'),
+
+    # tasker
+    path('api/tasker/services/action/', TaskerServiceActionView.as_view(), name='tasker-service-action'),
     
     # users
     path('api/users/', CreateUserView.as_view(), name='create_user'),
