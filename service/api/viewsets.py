@@ -1,11 +1,14 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from service.api.filtersets import ServiceFilter
 from service.models import Service
 from job.models import Job
 from tasker.models import Tasker
 from authentication.models import User
 from .serializers import ServiceSerializer
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import generics
 
 class ServiceCreateView(APIView):
     def post(self, request, format=None):
@@ -81,3 +84,18 @@ class ServiceActionView(APIView):
         
         service.save()
         return Response({'status': f'Service has been {service.status}.'}, status=status.HTTP_200_OK)
+    
+
+class ServiceListView(generics.ListAPIView):
+    serializer_class = ServiceSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ServiceFilter
+
+    def get_queryset(self):
+        job_id = self.kwargs['job_id']
+        return Service.objects.filter(job_id=job_id)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())  
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data) 

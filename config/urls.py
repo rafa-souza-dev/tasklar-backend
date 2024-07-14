@@ -36,7 +36,7 @@ from job.api.viewsets import (
 
 from authentication.api.viewsets import CreateUserView, ChangePasswordAPIView
 from authentication.views import PasswordResetView
-from service.api.viewsets import ServiceCreateView
+from service.api.viewsets import ServiceCreateView, ServiceListView
 from tasker.api.viewsets import TaskerServiceActionView
 
 router = DefaultRouter()
@@ -45,6 +45,7 @@ router.register(r'categories', CategoryViewSet, basename='period')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    
 
     # auth
     path('api/sessions/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
@@ -61,6 +62,7 @@ urlpatterns = [
 
     # service
     path('api/services/create/', ServiceCreateView.as_view(), name='service-create'),
+    path('api/jobs/<int:job_id>/services/', ServiceListView.as_view(), name='job-services'),
 
 
     # jobs
