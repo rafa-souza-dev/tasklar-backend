@@ -34,7 +34,7 @@ from job.api.viewsets import (
     JobListAPIView
 )
 
-from authentication.api.viewsets import CreateUserView, ChangePasswordAPIView
+from authentication.api.viewsets import CreateUserView, ChangePasswordAPIView, WhoamiAPIView
 from authentication.views import PasswordResetView
 from service.api.viewsets import ServiceCreateView, ServiceListView
 from tasker.api.viewsets import TaskerServiceActionView
@@ -59,6 +59,7 @@ urlpatterns = [
     
     # users
     path('api/users/', CreateUserView.as_view(), name='create_user'),
+    path('api/whoami/', WhoamiAPIView.as_view(), name='whoami'),
 
     # service
     path('api/services/create/', ServiceCreateView.as_view(), name='service-create'),
