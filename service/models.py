@@ -1,10 +1,10 @@
 from django.db import models
 from job.models import Job
 from tasker.models import Tasker
-from consumer.models import Consumer  
+from authentication.models import User
 
 class Service(models.Model):
-    consumer = models.ForeignKey(Consumer, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
     tasker = models.ForeignKey(Tasker, on_delete=models.CASCADE)
     request_description = models.TextField()
