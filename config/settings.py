@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'tasker.apps.TaskerConfig',
     'job',
     'consumer.apps.ConsumerConfig',
+    'service',
 
     # third-party apps
     'localflavor',
