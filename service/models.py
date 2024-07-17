@@ -1,14 +1,15 @@
 from django.db import models
+from consumer.models import Consumer
 from job.models import Job
 from tasker.models import Tasker
-from authentication.models import User
 
 class Service(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    consumer = models.ForeignKey(Consumer, on_delete=models.CASCADE)
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
     tasker = models.ForeignKey(Tasker, on_delete=models.CASCADE)
     request_description = models.TextField()
     date = models.DateField()
+    time = models.TimeField()
     
     STATUS_CHOICES = [
         ('pending', 'Pending'),
@@ -18,7 +19,7 @@ class Service(models.Model):
     ]
 
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
-    value = models.DecimalField(max_digits=11, decimal_places=2)
+    value = models.DecimalField(max_digits=11, decimal_places=2, null=True, blank=True, default=None)
     uf = models.CharField(max_length=2)
     city = models.CharField(max_length=255)
     neighborhood = models.CharField(max_length=255)
