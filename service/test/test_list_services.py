@@ -23,13 +23,13 @@ class TestListServices(APITestCase):
         tasker = Tasker.objects.create(user=user_tasker)
         consumer = Consumer.objects.create(user=user_consumer)
         category = Category.objects.create(name='Faxina')
-        job = Job.objects.create(
+        self.job = Job.objects.create(
             tasker=tasker, category=category, contact='123',
             value=100, days_of_week='0001110', description='muito bão',
             duration='1hr30min', start_time='06:00:00', end_time='19:00:00',
         )
         Service.objects.create(
-           consumer=consumer, job=job, tasker=tasker,
+           consumer=consumer, job=self.job, tasker=tasker,
            request_description='casa com 3 quartos e dois banheiros', date='2024-08-01',
            time='06:00:00', uf='PE', city='Pesqueira', neighborhood='Prado'
         )
@@ -37,4 +37,29 @@ class TestListServices(APITestCase):
         return super().setUp()
 
     def test_should_be_able_to_list_services(self):
-        self.assertTrue(1 > 0)
+        url = reverse('job-services', kwargs={'job_id': self.job.id})
+
+        response = self.client.get(
+            url,
+            format='json',
+        )
+
+        json_response = response.json()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(json_response), 1)
+        self.assertEqual(json_response[0]['date'], '2024-08-01')
+        self.assertEqual(json_response[0]['time'], '06:00:00')
+
+    def test_should_not_be_able_to_list_services_from_nonexistent_job(self):
+        url = reverse('job-services', kwargs={'job_id': 400})
+
+        response = self.client.get(
+            url,
+            format='json',
+        )
+
+        json_response = response.json()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(json_response), 0)
