@@ -35,10 +35,6 @@ class ServiceCreateView(APIView):
         except Tasker.DoesNotExist:
             return Response({'error': 'Tasker not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-        # Verificar se já existe um serviço com o mesmo consumer_id, job_id e tasker_id
-        if Service.objects.filter(consumer=consumer, job=job, tasker=tasker).exists():
-            return Response({'error': 'A service with the same Consumer, Job, and Tasker already exists.'}, status=status.HTTP_400_BAD_REQUEST)
-
         data = {
             'consumer': consumer.id,
             'job': job.id,

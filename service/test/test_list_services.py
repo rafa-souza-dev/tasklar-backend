@@ -1,6 +1,7 @@
 from django.contrib.auth.hashers import make_password
 from django.urls import reverse
 from rest_framework.test import APITestCase
+import urllib.parse
 
 from authentication.models import User
 from consumer.models import Consumer
@@ -31,7 +32,12 @@ class TestListServices(APITestCase):
         Service.objects.create(
            consumer=consumer, job=self.job, tasker=tasker,
            request_description='casa com 3 quartos e dois banheiros', date='2024-08-01',
-           time='06:00:00', uf='PE', city='Pesqueira', neighborhood='Prado'
+           time='06:00:00', uf='PE', city='Pesqueira', neighborhood='Baixa Grande'
+        )
+        Service.objects.create(
+           consumer=consumer, job=self.job, tasker=tasker,
+           request_description='casa com 3 quartos e dois banheiros', date='2024-10-10',
+           time='06:00:00', uf='PE', city='Pesqueira', neighborhood='Prado', status='accepted'
         )
 
         return super().setUp()
@@ -47,7 +53,7 @@ class TestListServices(APITestCase):
         json_response = response.json()
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(json_response), 1)
+        self.assertEqual(len(json_response), 2)
         self.assertEqual(json_response[0]['date'], '2024-08-01')
         self.assertEqual(json_response[0]['time'], '06:00:00')
 
@@ -63,3 +69,35 @@ class TestListServices(APITestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(json_response), 0)
+
+    def test_should_be_able_to_list_services_filtered_by_date(self):
+        url = reverse('job-services', kwargs={'job_id': self.job.id})
+        url_with_query = f"{url}?date=2024-08-01"
+
+        response = self.client.get(
+            url_with_query,
+            format='json',
+        )
+
+        json_response = response.json()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(json_response), 1)
+        self.assertEqual(json_response[0]['date'], '2024-08-01')
+        self.assertEqual(json_response[0]['neighborhood'], 'Baixa Grande')
+
+    def test_should_be_able_to_list_services_filtered_by_status(self):
+        url = reverse('job-services', kwargs={'job_id': self.job.id})
+        url_with_query = f"{url}?status=accepted&date=2024-10-10"
+
+        response = self.client.get(
+            url_with_query,
+            format='json',
+        )
+
+        json_response = response.json()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(json_response), 1)
+        self.assertEqual(json_response[0]['date'], '2024-10-10')
+        self.assertEqual(json_response[0]['neighborhood'], 'Prado')
