@@ -1,12 +1,12 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from authentication.models import User
 from consumer.models import Consumer
 from service.api.filtersets import ServiceFilter
 from service.models import Service
 from job.models import Job
 from tasker.models import Tasker
-from authentication.models import Consumer, User
 from .serializers import ServiceSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics

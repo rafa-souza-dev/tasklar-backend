@@ -46,9 +46,9 @@ INSTALLED_APPS = [
     # my apps
     'authentication.apps.AuthenticationConfig',
     'tasker.apps.TaskerConfig',
-    'job',
+    'job.apps.JobConfig',
     'consumer.apps.ConsumerConfig',
-    'service',
+    'service.apps.ServiceConfig',
 
     # third-party apps
     'localflavor',
