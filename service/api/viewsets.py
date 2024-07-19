@@ -12,6 +12,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
 
 class ServiceCreateView(APIView):
+    serializer_class = ServiceSerializer
+
     def post(self, request, format=None):
         consumer_id = request.data.get('consumer_id')
         job_id = request.data.get('job_id')
@@ -42,10 +44,10 @@ class ServiceCreateView(APIView):
             'request_description': request.data.get('request_description'),
             'date': request.data.get('date'),
             'status': request.data.get('status', 'pending'),
-            'value': request.data.get('value'),
             'uf': request.data.get('uf'),
             'city': request.data.get('city'),
-            'neighborhood': request.data.get('neighborhood')
+            'neighborhood': request.data.get('neighborhood'),
+            'time': request.data.get('time'),
         }
 
         serializer = ServiceSerializer(data=data)

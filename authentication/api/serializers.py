@@ -13,7 +13,7 @@ class UserSerializer(serializers.ModelSerializer):
 class WhoamiSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.User
-        fields = ('id', 'name', 'email', 'uf', 'city', 'phone', 'profile_type', 'tasker')
+        fields = ('id', 'name', 'email', 'uf', 'city', 'phone', 'profile_type', 'tasker', 'consumer')
 
 
 class ChangePasswordSerializer(serializers.Serializer):
