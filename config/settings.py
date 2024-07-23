@@ -46,9 +46,9 @@ INSTALLED_APPS = [
     # my apps
     'authentication.apps.AuthenticationConfig',
     'tasker.apps.TaskerConfig',
-    'job',
+    'job.apps.JobConfig',
     'consumer.apps.ConsumerConfig',
-    'service',
+    'service.apps.ServiceConfig',
 
     # third-party apps
     'localflavor',
@@ -152,7 +152,7 @@ SPECTACULAR_SETTINGS = {
 
 # SIMPLE JWT
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=365),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ALGORITHM": "HS256",
     "SIGNING_KEY": SECRET_KEY,
