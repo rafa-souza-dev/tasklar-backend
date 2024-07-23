@@ -1,3 +1,5 @@
+from django_filters.rest_framework import DjangoFilterBackend
+from pydantic import generics
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -81,3 +83,20 @@ class ServiceActionView(APIView):
         
         service.save()
         return Response({'status': f'Service has been {service.status}.'}, status=status.HTTP_200_OK)
+
+    class TaskerServiceListView(generics.ListAPIView):
+        serializer_class = ServiceSerializer
+        filter_backends = [DjangoFilterBackend]
+
+        def get_queryset(self):
+            tasker_id = self.kwargs['tasker_id']
+            return Service.objects.filter(tasker_id=tasker_id)
+
+    class ConsumerServiceListView(generics.ListAPIView):
+        serializer_class = ServiceSerializer
+        filter_backends = [DjangoFilterBackend]
+        filterset_fields = ['date']
+
+        def get_queryset(self):
+            consumer_id = self.kwargs['consumer_id']
+            return Service.objects.filter(user_id=consumer_id)
