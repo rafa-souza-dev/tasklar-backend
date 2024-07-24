@@ -27,6 +27,7 @@ from drf_spectacular.views import (
 )
 from rest_framework.routers import DefaultRouter
 
+from assessments.api.viewsets import AssessmentCreateView
 from job.api.viewsets import (
     CategoryViewSet,
     JobRetrieveAPIView,
@@ -56,6 +57,9 @@ urlpatterns = [
 
     # tasker
     path('api/tasker/services/action/', TaskerServiceActionView.as_view(), name='tasker-service-action'),
+
+    # assesments
+    path('api/assessments/', AssessmentCreateView.as_view(), name='assessment-create'),
     
     # users
     path('api/users/', CreateUserView.as_view(), name='create_user'),

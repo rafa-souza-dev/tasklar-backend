@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'job.apps.JobConfig',
     'consumer.apps.ConsumerConfig',
     'service.apps.ServiceConfig',
+    'assessments',
 
     # third-party apps
     'localflavor',
