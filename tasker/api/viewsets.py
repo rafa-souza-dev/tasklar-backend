@@ -2,6 +2,8 @@ from rest_framework import status as drf_status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from service.models import Service
+from tasker.api.serializers import TaskerDetailsSerializer
+from tasker.models import Tasker
 
 class TaskerServiceActionView(APIView):
     def post(self, request, format=None):
@@ -34,3 +36,13 @@ class TaskerServiceActionView(APIView):
         
         service.save()
         return Response({'status': f'Service has been {service.status}.'}, status=drf_status.HTTP_200_OK)
+        
+class TaskerDetailView(APIView):
+    def get(self, request, tasker_id, format=None):
+        try:
+            tasker = Tasker.objects.get(id=tasker_id)
+        except Tasker.DoesNotExist:
+            return Response({'error': 'Tasker not found.'}, status=drf_status.HTTP_404_NOT_FOUND)
+
+        serializer = TaskerDetailsSerializer(tasker)
+        return Response(serializer.data, status=drf_status.HTTP_200_OK)

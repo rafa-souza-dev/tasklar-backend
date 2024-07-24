@@ -38,7 +38,7 @@ from job.api.viewsets import (
 from authentication.api.viewsets import CreateUserView, ChangePasswordAPIView, WhoamiAPIView
 from authentication.views import PasswordResetView
 from service.api.viewsets import ServiceCreateView, ServiceListView
-from tasker.api.viewsets import TaskerServiceActionView
+from tasker.api.viewsets import TaskerDetailView, TaskerServiceActionView
 
 router = DefaultRouter()
 
@@ -57,6 +57,7 @@ urlpatterns = [
 
     # tasker
     path('api/tasker/services/action/', TaskerServiceActionView.as_view(), name='tasker-service-action'),
+    path('api/tasker/<int:tasker_id>/', TaskerDetailView.as_view(), name='tasker-detail'),
 
     # assesments
     path('api/assessments/', AssessmentCreateView.as_view(), name='assessment-create'),
