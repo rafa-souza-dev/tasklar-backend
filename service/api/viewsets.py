@@ -85,7 +85,7 @@ class ServiceActionView(APIView):
         return Response({'status': f'Service has been {service.status}.'}, status=status.HTTP_200_OK)
     
 
-class ServiceListView(generics.ListAPIView):
+class ServiceListByJobView(generics.ListAPIView):
     serializer_class = ServiceSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = ServiceFilter
