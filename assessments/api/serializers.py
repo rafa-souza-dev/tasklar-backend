@@ -5,10 +5,20 @@ from tasker.models import Tasker
 from service.models import Service
 
 class AssessmentSerializer(serializers.ModelSerializer):
-    consumer = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), source='consumer.id')
-    tasker = serializers.PrimaryKeyRelatedField(queryset=Tasker.objects.all())
-    service = serializers.PrimaryKeyRelatedField(queryset=Service.objects.all())
+    consumer_id = serializers.IntegerField()
+    tasker_id = serializers.IntegerField()
+    service_id = serializers.IntegerField()
 
     class Meta:
         model = Assessment
-        fields = '__all__'
+        fields = [
+            'quality_score',
+            'punctuality_score',
+            'communication_score',
+            'description',
+            'consumer_id',
+            'tasker_id',
+            'service_id'
+        ]
+
+        

@@ -1,8 +1,6 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from authentication.models import User
-from consumer.models import Consumer
 from service.api.filtersets import ServiceFilter
 from service.models import Service
 from job.models import Job
@@ -13,20 +11,18 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
 
 class ServiceCreateView(APIView):
-    serializer_class = ServiceSerializer
-
     def post(self, request, format=None):
-        consumer_id = request.data.get('consumer_id')
+        user_id = request.data.get('user_id')
         job_id = request.data.get('job_id')
         tasker_id = request.data.get('tasker_id')
 
-        if not (consumer_id and job_id and tasker_id):
-            return Response({'error': 'Consumer ID, Job ID, or Tasker ID not provided.'}, status=status.HTTP_400_BAD_REQUEST)
+        if not (user_id and job_id and tasker_id):
+            return Response({'error': 'User ID, Job ID, or Tasker ID not provided.'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            consumer = Consumer.objects.get(id=consumer_id)
+            user = User.objects.get(id=user_id)
         except User.DoesNotExist:
-            return Response({'error': 'Consumer not found.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
 
         try:
             job = Job.objects.get(id=job_id)
@@ -38,8 +34,12 @@ class ServiceCreateView(APIView):
         except Tasker.DoesNotExist:
             return Response({'error': 'Tasker not found.'}, status=status.HTTP_404_NOT_FOUND)
 
+        # Verificar se já existe um serviço com o mesmo user_id, job_id e tasker_id
+        if Service.objects.filter(user=user, job=job, tasker=tasker).exists():
+            return Response({'error': 'A service with the same User, Job, and Tasker already exists.'}, status=status.HTTP_400_BAD_REQUEST)
+
         data = {
-            'consumer': consumer.id,
+            'user': user.id,
             'job': job.id,
             'tasker': tasker.id,
             'request_description': request.data.get('request_description'),
@@ -48,8 +48,7 @@ class ServiceCreateView(APIView):
             'value': request.data.get('value'),
             'uf': request.data.get('uf'),
             'city': request.data.get('city'),
-            'neighborhood': request.data.get('neighborhood'),
-            'time': request.data.get('time'),
+            'neighborhood': request.data.get('neighborhood')
         }
 
         serializer = ServiceSerializer(data=data)
@@ -61,7 +60,7 @@ class ServiceCreateView(APIView):
 class ServiceActionView(APIView):
     def post(self, request, format=None):
         action = request.data.get('action')
-        consumer_id = request.data.get('consumer_id')
+        user_id = request.data.get('user_id')
         job_id = request.data.get('job_id')
         tasker_id = request.data.get('tasker_id')
 
@@ -70,11 +69,11 @@ class ServiceActionView(APIView):
         if action not in valid_actions:
             return Response({'error': 'Invalid action.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        if not (consumer_id and job_id and tasker_id):
-            return Response({'error': 'Consumer ID, Job ID, or Tasker ID not provided.'}, status=status.HTTP_400_BAD_REQUEST)
+        if not (user_id and job_id and tasker_id):
+            return Response({'error': 'User ID, Job ID, or Tasker ID not provided.'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            service = Service.objects.get(consumer_id=consumer_id, job_id=job_id, tasker_id=tasker_id)
+            service = Service.objects.get(user_id=user_id, job_id=job_id, tasker_id=tasker_id)
         except Service.DoesNotExist:
             return Response({'error': 'Service not found.'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -85,7 +84,7 @@ class ServiceActionView(APIView):
         
         service.save()
         return Response({'status': f'Service has been {service.status}.'}, status=status.HTTP_200_OK)
-
+    
 
 class ServiceListView(generics.ListAPIView):
     serializer_class = ServiceSerializer
@@ -97,6 +96,6 @@ class ServiceListView(generics.ListAPIView):
         return Service.objects.filter(job_id=job_id)
 
     def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
+        queryset = self.filter_queryset(self.get_queryset())  
         serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data) 
