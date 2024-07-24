@@ -6,7 +6,7 @@ from service.models import Service
 from job.models import Job
 from tasker.models import Tasker
 from authentication.models import User
-from .serializers import ServiceSerializer
+from .serializers import ServiceFullSerializer, ServiceFullTaskerSerializer, ServiceSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
 
@@ -86,7 +86,7 @@ class ServiceActionView(APIView):
         return Response({'status': f'Service has been {service.status}.'}, status=status.HTTP_200_OK)
     
 
-class ServiceListView(generics.ListAPIView):
+class ServiceListByJobView(generics.ListAPIView):
     serializer_class = ServiceSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = ServiceFilter
@@ -99,3 +99,33 @@ class ServiceListView(generics.ListAPIView):
         queryset = self.filter_queryset(self.get_queryset())  
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data) 
+
+
+class ServiceListByTaskerView(generics.ListAPIView):
+    serializer_class = ServiceFullSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ServiceFilter
+
+    def get_queryset(self):
+        tasker_id = self.kwargs['tasker_id']
+        return Service.objects.filter(tasker_id=tasker_id)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())  
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+class ServiceListByConsumerView(generics.ListAPIView):
+    serializer_class = ServiceFullTaskerSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ServiceFilter
+
+    def get_queryset(self):
+        consumer_id = self.kwargs['consumer_id']
+        return Service.objects.filter(consumer_id=consumer_id)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())  
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)

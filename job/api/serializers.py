@@ -45,3 +45,11 @@ class JobDetailsSerializer(JobSerializer):
 
 class JobListSerializer(JobSerializer):
     tasker = TaskerDetailsSerializer()
+
+
+class JobDetailsCategorySerializer(serializers.ModelSerializer):
+    category = CategorySerializer()
+
+    class Meta:
+        model = Job
+        fields = ['id', 'category']
