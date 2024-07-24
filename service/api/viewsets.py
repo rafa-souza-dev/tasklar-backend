@@ -7,7 +7,7 @@ from service.api.filtersets import ServiceFilter
 from service.models import Service
 from job.models import Job
 from tasker.models import Tasker
-from .serializers import ServiceFullSerializer, ServiceSerializer
+from .serializers import ServiceFullSerializer, ServiceFullTaskerSerializer, ServiceSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
 
@@ -108,6 +108,21 @@ class ServiceListByTaskerView(generics.ListAPIView):
     def get_queryset(self):
         tasker_id = self.kwargs['tasker_id']
         return Service.objects.filter(tasker_id=tasker_id)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())  
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+class ServiceListByConsumerView(generics.ListAPIView):
+    serializer_class = ServiceFullTaskerSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ServiceFilter
+
+    def get_queryset(self):
+        consumer_id = self.kwargs['consumer_id']
+        return Service.objects.filter(consumer_id=consumer_id)
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())  
