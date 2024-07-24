@@ -7,7 +7,7 @@ class TaskerServiceActionView(APIView):
     def post(self, request, format=None):
         service_id = request.data.get('service_id')
         service_status = request.data.get('status')
-        user_id = request.data.get('user_id')
+        consumer_id = request.data.get('consumer_id')
         job_id = request.data.get('job_id')
         tasker_id = request.data.get('tasker_id')
 
@@ -16,11 +16,11 @@ class TaskerServiceActionView(APIView):
         if service_status not in valid_statuses:
             return Response({'error': 'Invalid status.'}, status=drf_status.HTTP_400_BAD_REQUEST)
 
-        if not (service_id and user_id and job_id and tasker_id):
+        if not (service_id and consumer_id and job_id and tasker_id):
             return Response({'error': 'Service ID, User ID, Job ID, or Tasker ID not provided.'}, status=drf_status.HTTP_400_BAD_REQUEST)
 
         try:
-            service = Service.objects.get(id=service_id, user_id=user_id, job_id=job_id, tasker_id=tasker_id)
+            service = Service.objects.get(id=service_id, consumer_id=consumer_id, job_id=job_id, tasker_id=tasker_id)
         except Service.DoesNotExist:
             return Response({'error': 'Service not found.'}, status=drf_status.HTTP_404_NOT_FOUND)
 
