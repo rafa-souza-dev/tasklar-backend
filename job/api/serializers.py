@@ -52,4 +52,4 @@ class JobDetailsCategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Job
-        fields = ['category']
+        fields = ['id', 'category']
